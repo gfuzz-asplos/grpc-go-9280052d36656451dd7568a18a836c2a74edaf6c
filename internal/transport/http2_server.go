@@ -30,6 +30,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"fmt"
 
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/http2"
@@ -1078,11 +1079,10 @@ func (t *http2Server) Close() error {
 
 // deleteStream deletes the stream s from transport's active streams.
 func (t *http2Server) deleteStream(s *Stream, eosReceived bool) {
-	// In case stream sending and receiving are invoked in separate
-	// goroutines (e.g., bi-directional streaming), cancel needs to be
-	// called to interrupt the potential blocking on other goroutines.
+	
 	s.cancel()
 
+	fmt.Println("after cancel")
 	t.mu.Lock()
 	if _, ok := t.activeStreams[s.id]; ok {
 		delete(t.activeStreams, s.id)
